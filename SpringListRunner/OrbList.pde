@@ -33,7 +33,7 @@ class OrbList {
     Does very little.
     You do not need to modify this method.
     =========================*/
-  OrbList() {
+    OrbList() {
     front = null;
   }//constructor
 
@@ -43,33 +43,71 @@ class OrbList {
     Insert o to the beginning of the list.
     =========================*/
   void addFront(OrbNode o) {
+    // When the list isn’t empty, the current front is the new node
+    if (front != null) {
+      o.next = front;
+      front.previous = o;
+    }
+    front = o;
+  }//addFront
+
+    Insert o to the beginning of the list.
+    =========================*/
+  void addFront(OrbNode o) {
 
   }//addFront
 
 
-  /*===========================
+   /*===========================
     populate(int n, boolean ordered)
 
     Clear the list.
-    Add n randomly generated  orbs to the list,
+    Add n randomly generated orbs to the list,
     using addFront.
     If ordered is true, the orbs should all
     have the same y coordinate and be spaced
-    SPRING_LEGNTH apart horizontally.
+    SPRING_LENGTH apart horizontally.
     =========================*/
   void populate(int n, boolean ordered) {
-
+    // Clear  list
+    front = null;
+    if (ordered) {
+      // fixed y coordinate
+      float y = height / 2;
+      // Each orb is SPRING_LENGTH away
+      for (int i = 0; i < n; i++) {
+        // x starts at SPRING_LENGTH/2 and by SPRING_LENGTH increments every time
+        float x = SPRING_LENGTH / 2 + i * SPRING_LENGTH;
+        // Create orb node with random size and mass 
+        OrbNode node = new OrbNode(x, y, random(MIN_SIZE, MAX_SIZE), random(MIN_MASS, MAX_MASS));
+        addFront(node);
+      }
+    } else {
+      // Create n orbs at random positions.
+      for (int i = 0; i < n; i++) {
+        float x = random(MIN_SIZE, width - MIN_SIZE);
+        float y = random(MIN_SIZE, height - MIN_SIZE);
+        OrbNode node = new OrbNode(x, y, random(MIN_SIZE, MAX_SIZE), random(MIN_MASS, MAX_MASS));
+        addFront(node);
+      }
+    }
   }//populate
 
   /*===========================
-    display(int springLength)
+    display()
 
     Display all the nodes in the list using
     the display method defined in the OrbNode class.
     =========================*/
   void display() {
-
+    OrbNode current = front;
+    while (current != null) {
+      current.display();
+      current = current.next;
+    }
   }//display
+
+
 
   /*===========================
     applySprings(int springLength, float springK)

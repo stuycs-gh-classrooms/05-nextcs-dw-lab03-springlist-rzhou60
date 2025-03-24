@@ -83,7 +83,7 @@ class OrbList {
         addFront(node);
       }
     } else {
-      // Create n orbs at random positions.
+      // Create n orbs at random positions
       for (int i = 0; i < n; i++) {
         float x = random(MIN_SIZE, width - MIN_SIZE);
         float y = random(MIN_SIZE, height - MIN_SIZE);
@@ -107,8 +107,6 @@ class OrbList {
     }
   }//display
 
-
-
   /*===========================
     applySprings(int springLength, float springK)
 
@@ -116,27 +114,40 @@ class OrbList {
     element in the list.
     =========================*/
   void applySprings(int springLength, float springK) {
-
+    OrbNode current = front;
+    while (current != null) {
+      current.applySprings(springLength, springK);
+      current = current.next;
+    }
   }//applySprings
 
   /*===========================
     applyGravity(Orb other, float gConstant)
 
     Use the getGravity and applyForce methods
-    to apply gravity crrectly.
+    to apply gravity correctly.
     =========================*/
   void applyGravity(Orb other, float gConstant) {
-
-  }//applySprings
+    OrbNode current = front;
+    while (current != null) {
+      PVector gravity = current.getGravity(other, gConstant);
+      current.applyForce(gravity);
+      current = current.next;
+    }
+  }//applyGravity
 
   /*===========================
     run(boolean bounce)
 
     Call run on each node in the list.
     =========================*/
-  void run(boolean boucne) {
-
-  }//applySprings
+  void run(boolean bounce) {
+    OrbNode current = front;
+    while (current != null) {
+      current.move(bounce);
+      current = current.next;
+    }
+  }//run
 
   /*===========================
     removeFront()
@@ -146,9 +157,13 @@ class OrbList {
     should now be the first (and so on).
     =========================*/
   void removeFront() {
-
+    if (front != null) {
+      front = front.next;
+      if (front != null) {
+        front.previous = null;
+      }
+    }
   }//removeFront
-
 
   /*===========================
     getSelected(float x, float y)
@@ -157,11 +172,17 @@ class OrbList {
     a reference to that node.
     Otherwise, return null.
 
-    See isSlected(float x, float y) in
-    the Orb class (line 115).
+    See isSelected(float x, float y) in
+    the Orb class.
     =========================*/
   OrbNode getSelected(int x, int y) {
-
+    OrbNode current = front;
+    while (current != null) {
+      if (current.isSelected(x, y)) {
+        return current;
+      }
+      current = current.next;
+    }
     return null;
   }//getSelected
 
@@ -174,5 +195,16 @@ class OrbList {
     position of o in the list.
     =========================*/
   void removeNode(OrbNode o) {
-  }
+    if (o == front) {
+      removeFront();
+    } else {
+      if (o.previous != null) {
+        o.previous.next = o.next;
+      }
+      if (o.next != null) {
+        o.next.previous = o.previous;
+      }
+    }
+  }//removeNode
 }//OrbList
+
